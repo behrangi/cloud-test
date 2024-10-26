@@ -1,9 +1,9 @@
-name: Deploy Nginx
+name: Deploy Iris classifier
 
 on:
   push:
     branches:
-      - 'main'
+      - 'master'
 
 jobs:
   deploy:
