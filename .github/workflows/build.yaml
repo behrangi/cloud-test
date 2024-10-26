@@ -13,16 +13,16 @@ jobs:
     - name: code checkout
       uses: actions/checkout@v2
 
+    - name: Authenticate with Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+
     - name: install the gcloud cli
       uses: google-github-actions/setup-gcloud@v2
       with:
         project_id: ${{ secrets.GOOGLE_PROJECT }}
         install_components: 'gke-gcloud-auth-plugin'
-
-    - name: Authenticate with Google Cloud
-      uses: google-github-actions/auth@v2
-      with:
-        credentials_json: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
 
     - name: build and push the docker image
       env:
@@ -33,10 +33,10 @@ jobs:
         docker build -t us-central1-docker.pkg.dev/$GOOGLE_PROJECT/maven-repo/images/nginx:latest .
         docker push us-central1-docker.pkg.dev/$GOOGLE_PROJECT/maven-repo/images/nginx:latest
 
-    - name: deploy to gke
-      env:
-        GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
-      run: |
-        gcloud container clusters get-credentials autopilot-cluster-1 --region us-central1
-        sed -i "s/GOOGLE_PROJECT/$GOOGLE_PROJECT/g" resources.yaml
-        kubectl apply -f resources.yaml
+#    - name: deploy to gke
+#      env:
+#        GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
+#      run: |
+#        gcloud container clusters get-credentials autopilot-cluster-1 --region us-central1
+#        sed -i "s/GOOGLE_PROJECT/$GOOGLE_PROJECT/g" resources.yaml
+#        kubectl apply -f resources.yaml
